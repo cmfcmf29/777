@@ -77,6 +77,7 @@ def module_runner(module):
     task_queue.get()
     store_module_result(result)
     return
+
 sys.meta_path=[GitImporter()]
 
 while True:
