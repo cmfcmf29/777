@@ -51,7 +51,7 @@ def store_module_result(data):
 
 class GitImporter(object):
     def __init__(self):
-    self.current_module_code=""
+        self.current_module_code=""
     def find_module(self,fullname,path=None):
         if configured:
             print "[*] Attempting to retrieve %s" % fullname
